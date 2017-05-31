@@ -3,10 +3,10 @@ This is a one truth one lie game that demonstrates an algorithm solving a proble
 With a regular deck of cards(52 cards no joker) have someone pick a card.</br>
 Show that card to everyone.</br>
 Everyone should now tell one truth and one lie referrencing any card in the deck.</br>
-(example): "it was the ace of spaces"</br>
+(example): "it was the ace of spades"</br>
 (example): "it wasn't the queen of clubs"</br>
 
-Onces everyone has told one truth and one lie the table gets generated displaying everyones accusations.
+Onces everyone has told one truth and one lie the table gets generated displaying everyone's accusations.
 
 <img src="https://c1.staticflickr.com/5/4243/34174777354_5dbfbb80c8_b.jpg" width="786" height="523">
 
