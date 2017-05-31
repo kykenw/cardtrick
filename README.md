@@ -2,9 +2,9 @@ This is a one truth one lie game that demonstrates an algorithm solving a proble
 
 With a regular deck of cards(52 cards no joker) have someone pick a card.
 Show that card to everyone.
-Everyone should now tell one truth and one lie referrencing any card in the deck.
-(example): "it was the ace of spaces"
-(example): "it wasn't the queen of clubs"
+Everyone should now tell one truth and one lie referrencing any card in the deck.</br>
+(example): "it was the ace of spaces"</br>
+(example): "it wasn't the queen of clubs"</br>
 
 Onces everyone has told one truth and one lie the table gets generated displaying everyones accusations.
 
