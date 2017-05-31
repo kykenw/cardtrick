@@ -1,7 +1,7 @@
 This is a one truth one lie game that demonstrates an algorithm solving a problem.
 
-With a regular deck of cards(52 cards no joker) have someone pick a card.
-Show that card to everyone.
+With a regular deck of cards(52 cards no joker) have someone pick a card.</br>
+Show that card to everyone.</br>
 Everyone should now tell one truth and one lie referrencing any card in the deck.</br>
 (example): "it was the ace of spaces"</br>
 (example): "it wasn't the queen of clubs"</br>
