@@ -14,6 +14,6 @@ Clicking the Solve button has the algorithm fill in as much information as it ca
 
 <img src="https://c1.staticflickr.com/5/4248/34978546526_6d6787c0e8_b.jpg" width="762" height="504">
 
-The data gets analyzed and is further filled out hopefully finding the correct card that was pulled.
+Clicking the Next button causes the data to get analyzed further filling out and hopefully finding the correct card that was pulled.
 
 <img src="https://c1.staticflickr.com/5/4225/34631151030_6bec60c7cf_b.jpg" width="764" height="524">
