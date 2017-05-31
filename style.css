@@ -1,0 +1,92 @@
+/*
+Kyle Kenworthy
+Javascript Final Project
+5/19/2017
+*/
+
+html, body {
+    height:100%;
+    width:100%;
+    margin:0;
+    background-color: black;
+}
+.box {
+    background-color:white;
+    height:100%;
+    width:900px;
+    margin:0 auto;
+    position:relative;
+}
+.topbar {
+    display:flex;
+    padding:20px;
+    min-height:50px;
+    vertical-align: middle;
+    background-color:#ddd;
+}
+/*instructions panel*/
+.ipanel {
+    display:flex;
+    min-height:50px;
+    background-color:#eee;
+}
+/*form panel*/
+.fpanel {
+    display:flex;
+    padding:20px;
+    min-height:50px;
+    background-color:#eee;
+}
+/*table panel*/
+.tpanel {
+    display:flex;
+    min-height:50px;
+    background-color:#eee;
+}
+.btn {
+    display:flex;
+    min-height:50px;
+    background-color:#eee;
+}
+.name {
+    min-width:12em;
+}
+.boolean {
+    min-width:3em;
+}
+table {
+    border:1px solid black;
+    border-collapse:collapse;
+    margin:0 auto;
+}
+td {
+    border:1px solid black;
+    padding:5px;
+}
+#solvebtn {
+    margin:10px auto;
+}
+#next {
+    margin:10px auto;
+}
+.red {
+    color:red;
+}
+.orange {
+    color:orange;
+}
+.yellow {
+    color:yellow;
+}
+.green {
+    color:green;
+}
+.blue {
+    color:blue;
+}
+.indigo {
+    color:indigo;
+}
+.violent {
+    color:violet;
+}
