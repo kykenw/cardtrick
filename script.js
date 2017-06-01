@@ -3,31 +3,31 @@
 // 5/19/2017
 
 //global variables
-//holds array of person objects
 var people = [];
-//iterator for people
+//holds array of person objects
 var pplCount = 0;
-//array for holding card objects
+//iterator for people
 var deck = [];
-//array for holding accusation objects
+//array for holding card objects
 var accusations = [];
-//array for holding the table cells with .boolean class
+//array for holding accusation objects
 var booleanCells;
-//array for holding suspect cards
+//array for holding the table cells with .boolean class
 var suspects = [];
-//array for holding innocent cards
+//array for holding suspect cards
 var innocent = [];
-//end result string for holding the pulled card from deck
+//array for holding innocent cards
 var pulledCard = "";
+//end result string for holding the pulled card from deck
+var cooldown = 1000;
 //cooldown for the settimout to add a delay to the table filling out
-var cooldown = 2000;
-//array for holding the Not Sure accusations
 var ptoSolve = [];
-//variable for holding a rate for strategy2
+//array for holding the Not Sure accusations
 var topRate;
+//variable for holding a rate for strategy2
 
-//card object blueprint
 function Card(rank, suit) {
+//card object blueprint
     //variables for each instance of card
     this.rank = rank;
     this.suit = suit;
@@ -38,73 +38,72 @@ function Card(rank, suit) {
     }
 }
 
-//accusation object blueprint
 function Accusation(acc) {
-    //this variable holds the accusation string
+//accusation object blueprint
     this.accusation = acc;
-    //this variable will hold a true or false value
+    //this variable holds the accusation string
     this.torl;
+    //this variable will hold a true or false value
     this.c;
     this.index;
-    //method for getting torl
     this.getTorl = function () {
+    //method for getting torl
         return this.torl;
     }
-    //method for setting torl to Truth
     this.setTruth = function (i) {
+    //method for setting torl to Truth
         this.c = "green";
         this.torl = "Truth";
         this.index = i;
         setBooleanValue(this.c, this.torl, this.index);
     }
-    //method for setting torl to Lie
     this.setLie = function (i) {
+    //method for setting torl to Lie
         this.c = "red";
         this.torl = "Lie";
         this.index = i;
         setBooleanValue(this.c, this.torl, this.index);
     }
-    //method for setting torl to Not Sure
     this.setNotSure = function (i) {
+    //method for setting torl to Not Sure
         this.c = "blue";
         this.torl = "Not Sure";
         this.index = i;
         setBooleanValue(this.c, this.torl, this.index);
 
     }
-    //method for returning the accusation string
     this.getAcc = function () {
+    //method for returning the accusation string
         return this.accusation;
     }
 }
+function setBooleanValue(c, s, i) {
 //function for setting Truth/Lie/NotSure in the table
-function setBooleanValue(c, s, i){
-    if(booleanCells == undefined){
+    if (booleanCells == undefined) {
         booleanCells = document.querySelectorAll(".boolean");
     }
     var col = c;
     var str = s;
     var index = i;
-    if(booleanCells[index].style){
+    if (booleanCells[index].style) {
         booleanCells[index].style.color = col;
         booleanCells[index].innerHTML = str;
     }
-    
+
 }
 
-//person object blueprint
 function Person(name, a1, a2) {
+//person object blueprint
     this.name = name;
     this["a1"] = a1;
     this["a2"] = a2;
 
 
-    //this function returns the persons name
     this.getName = function () {
+    //this method returns the persons name
         return this.name;
     }
-    //these didn't work as I wanted them to so I ended up creating a paralell array
-    //these functions call a accusation method that returns the accusation string
+    
     this.getAcc1 = function () {
         return this.a1;
     }
@@ -144,10 +143,12 @@ function createPerson() {
         pplCount++;
     }
 }
-//build the table
 function buildTable() {
+//build the table
     var accNumber = 0;
     var tpanel = document.getElementById("tpanel");
+    var fpanel = document.getElementById("fpanel");
+    var form = document.getElementById("form");
     var buttonpanel = document.getElementById("btn");
     var button = document.createElement("button");
     tpanel.innerHTML = "";
@@ -157,7 +158,7 @@ function buildTable() {
     var tbody = document.createElement("tbody");
     tpanel.appendChild(table);
     table.appendChild(tbody);
-    rows = [];
+    var rows = [];
 
     //iterate through all the created people objects
     for (var i = 0; i < people.length; i++) {
@@ -179,6 +180,7 @@ function buildTable() {
     buttonpanel.appendChild(button);
     button.textContent = "Solve";
     button.id = "solvebtn";
+    fpanel.removeChild(form);
 
     if (button.addEventListener) {
         button.addEventListener("click", solve, false);
@@ -186,9 +188,10 @@ function buildTable() {
         button.attachEvent("onclick", solve);
     }
 }
-//figure out which card was pulled from the deck
 function solve() {
+//figure out which card was pulled from the deck
     var buttonpanel = document.getElementById("btn");
+    var solvebtn = document.getElementById("solvebtn");
     //strategy1
     var c1 = "";
     var c2 = "";
@@ -204,8 +207,7 @@ function solve() {
             suspects.push(c1);
             suspects.push(c2);
             if (suspects.length == 2) {
-                break;
-
+                break;//if there are 2 suspects break out of the loop
             }
         }
     }
@@ -236,6 +238,7 @@ function solve() {
             }, cooldown + (1000 * i));
         })(i, torl);
     }
+    buttonpanel.removeChild(solvebtn);
     //create a next button and append it to the buttonpanel
     next = document.createElement("button");
     next.textContent = "Next";
@@ -258,7 +261,7 @@ function getPulledCard() {
         //start strategy2
         //strategy2 is to make a guess at which card was pulled
         //based on the number of times a card is referrenced
-        
+
         var appearances = [];//hold the number of occurences each card gets referrenced
         var rates = [];//hold strings for each card
         for (var c = 0; c < deck.length; c++) {
@@ -281,21 +284,25 @@ function getPulledCard() {
         }
         //get the highest value in the rates array
         topRate = Math.max.apply(Math, rates);
-        for (var n = 0; n<rates.length; n++) {
-            //find the card that has the topRate and assign it to topCard
+        for (var n = 0; n < rates.length; n++) {
+            //find the card that has the topRate and assign it to pulledCard
             if (topRate == rates[n]) {
                 pulledCard = deck[n].getName();
             }
         }
-        //make a guess at which card was pulled
-        console.log("was it the " + pulledCard + "(%" + topRate + ")?");
+        if(topRate != 50){
+            //make a guess at which card was pulled
+            alert("was it the " + pulledCard + "?");
+        }else{
+            alert("The was not enough data provided to make a guess")
+        }
     } else {
-        console.log(pulledCard + " is the card pulled from the deck")
+        alert(pulledCard + " is the card pulled from the deck");
     }
 }
-//function to do data analysis on the table
 function sudoku() {
-    //function that if one is truth the other is false and fills in
+//function to do data analysis on the table and modify torl values
+    
     fillIn();
 
     //create a list of accusations that are Not Sure
@@ -310,7 +317,6 @@ function sudoku() {
     //now that we have a list of problems we can try to find solutions for them
     solveProblems();
 
-    //function that if one is truth the other is false and fills in
     fillIn();
 
     //try to find the pulled card
@@ -319,6 +325,8 @@ function sudoku() {
         var torl = accusations[p].getTorl();
         var prefix = getPrefix(a);
         var card = getCard(a);
+        console.log(prefix);
+        console.log(torl);
 
         if (prefix == "it was the" && torl == "Truth") {
             return card;
@@ -329,79 +337,76 @@ function sudoku() {
         }
     }
 }
-function solveProblems(){
+function solveProblems() {
+//go through the list of problems and solve them
     var acc;
     var torl;
     var solution;
-    Loop1:
-    for (var a = 0; a < accusations.length; a++) {
-        acc = accusations[a].getAcc();
-        torl = accusations[a].getTorl();
-        for (var p = 0; p < ptoSolve.length; p++) {
-            //there are issues with this block that I need to figure out
-            if (ptoSolve[p] == acc) {
-                if (torl != "Not Sure") {
-                    solution = accusations[a].getTorl();
-                }
-                if (solution == "Truth") {
-                    accusations[a].setTruth(a);
-                    ptoSolve.splice(p, 1);
-                    //console.log("set " + ptoSolve[p] + " to Truth");
-                    continue Loop1;
+    do {
 
+        for (var a = 0; a < accusations.length; a++) {
+            acc = accusations[a].getAcc();
+            torl = accusations[a].getTorl();
+            for (var p = 0; p < ptoSolve.length; p++) {
+                //there are issues with this block that I need to figure out
+                if (ptoSolve[p] == acc) {
+                    if (torl != "Not Sure") {
+                        solution = accusations[a].getTorl();
+                    }
+                    if (solution == "Truth") {
+                        accusations[a].setTruth(a);
+                        ptoSolve.splice(p, 1);
+                        //console.log("set " + ptoSolve[p] + " to Truth");
+
+                    }
+                    if (solution == "Lie") {
+                        accusations[a].setLie(a);
+                        ptoSolve.splice(p, 1)
+                        //console.log("set " + ptoSolve[p] + " to Lie");
+                    }
                 }
-                if (solution == "Lie") {
-                    accusations[a].setLie(a);
-                    ptoSolve.splice(p, 1)
-                    //console.log("set " + ptoSolve[p] + " to Lie");
-                    continue Loop1;
-                }
-            }
-            //there are issues with this block I need to figure out
-            //if problem to solve is opposite of current accusation
-            if (ptoSolve[p] == getOpposite(acc)) {
-                var s;
-                if (torl != "Not Sure") {
-                    solution = accusations[a].getTorl();
-                }
-                //set solution for the opposite accusation
-                if (solution == "Truth") {
-                    s = "Lie";
-                }
-                if (solution == "Lie") {
-                    s = "Truth";
-                }
-                for (var n = 0; n<accusations.length; n++) {
-                    var accu = accusations[n].getAcc();
-                    if (accu == ptoSolve[p]) {
-                        if (s == "Lie") {
-                            accusations[n].setLie(n);
-                            ptoSolve.splice(p, 1);
-                            continue Loop1;
-                        }
-                        if (s == "Truth") {
-                            accusations[n].setTruth(n);
-                            ptoSolve.splice(p, 1);
-                            continue Loop1;
+                
+                //if problem to solve is opposite of current accusation
+                if (ptoSolve[p] == getOpposite(acc)) {
+                    var s;
+                    if (torl != "Not Sure") {
+                        solution = accusations[a].getTorl();
+                    }
+                    //set solution for the opposite accusation
+                    if (solution == "Truth") {
+                        s = "Lie";
+                    }
+                    if (solution == "Lie") {
+                        s = "Truth";
+                    }
+                    for (var n = 0; n < accusations.length; n++) {
+                        var accu = accusations[n].getAcc();
+                        if (accu == ptoSolve[p]) {
+                            if (s == "Lie") {
+                                accusations[n].setLie(n);
+                                ptoSolve.splice(p, 1);
+                            }
+                            if (s == "Truth") {
+                                accusations[n].setTruth(n);
+                                ptoSolve.splice(p, 1);
+                            }
                         }
                     }
                 }
             }
+
         }
-        //if there are still any problems to solve restart the outer loop
-        if (ptoSolve.length > 0) {
-            continue Loop1;
-        }
-    }
+        //console.log(ptoSolve.length);
+    } while (ptoSolve.length > 0);
 }
 //return the prefix of the card
 function getPrefix(a) {
     var prefix;
     if (a.includes("it was the")) {
         prefix = "it was the";
-    }else if (a.includes("it wasn't the")) {
+    } else if (a.includes("it wasn't the")) {
         prefix = "it wasn't the";
-    }else{
+    } else {
         console.log("accusation doesn't have a valid prefix");
     }
     return prefix;
@@ -446,9 +451,9 @@ function determineTorL(a) {
         //console.log("Error card not in innocent/suspect array");
     }
 }
-//if one is truth the other false - used in the sudoku array
-function fillIn(){
-    //fill in any information that we can
+
+function fillIn() {
+//function that if one is truth the other is Lie and fills in
     for (var x = 0; x < accusations.length; x++) {
         var torl = accusations[x].getTorl();
         if (x == 0) {
@@ -459,7 +464,7 @@ function fillIn(){
             }
             //if even number
         } else if (x % 2 == 0) {
-            console.log(x + "%2==0");
+            //console.log(x + "%2==0");
             if (torl == "Lie") {
                 accusations[x + 1].setTruth(x + 1);
             } else if (torl == "Truth") {
@@ -467,7 +472,7 @@ function fillIn(){
             }
             //if odd number
         } else if (x % 2 == 1) {
-            console.log(x + "%2==1");
+            //console.log(x + "%2==1");
             if (torl == "Lie") {
                 accusations[x - 1].setTruth(x - 1);
             } else if (torl == "Truth") {
@@ -476,16 +481,16 @@ function fillIn(){
         }
     }
 }
-//figure out which card the accusation contains and return it
 function getCard(a) {
+//figure out which card the accusation contains and return it
     for (var i = 0; i < deck.length; i++) {
         if (a.includes(deck[i].getName())) {
             return deck[i].getName();
         }
     }
 }
-//returns the opposite of the string passed as a parameter
 function getOpposite(a) {
+//returns the opposite of the string passed as a parameter
     var prefix = getPrefix(a);
     var newprefix;
     var card = getCard(a);
@@ -501,8 +506,8 @@ function getOpposite(a) {
     return newAcc;
 
 }
-//create events for the buttons to respond to clicks
 function createEventListeners() {
+//create events for the buttons to respond to clicks
     createPersonBtn = document.getElementById("personBtn");
     buildTableBtn = document.getElementById("buildTableBtn");
 
@@ -520,6 +525,7 @@ function createEventListeners() {
 }
 
 function buildDeck() {
+//builds the deck of cards
     //arrays to create a deck of cards
     var ranks = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"];
     var suits = ["Spades", "Hearts", "Diamonds", "Clubs"];
@@ -551,22 +557,22 @@ function buildDeck() {
     document.getElementById("prefix2").selectedIndex = -1;
     s2.selectedIndex = -1;
 }
-//stop invalid submissions from getting submitted
 function validForm() {
+//stop invalid submissions from getting submitted
     var n = document.getElementById("nameinput").value;
     var p1 = document.getElementById("prefix1").value;
-    var p2 = document.getElementById("prefix1").value;
-    var s1 = document.getElementById("prefix1").value;
-    var s2 = document.getElementById("prefix1").value;
+    var p2 = document.getElementById("prefix2").value;
+    var s1 = document.getElementById("suffix1").value;
+    var s2 = document.getElementById("suffix2").value;
     if (n != "" && p1 != "" && p2 != "" && s1 != "" && s2 != "") {
         return true;
     } else {
-        return true;
+        return false;
     }
 
 }
-function createTitle(){
-    
+function createTitle() {
+//creates the website title
 }
 //build the deck of cards and create eventlisteners for the buttons
 function setup() {
