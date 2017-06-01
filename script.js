@@ -27,7 +27,7 @@ var topRate;
 //variable for holding a rate for strategy2
 
 function Card(rank, suit) {
-//card object blueprint
+    //card object blueprint
     //variables for each instance of card
     this.rank = rank;
     this.suit = suit;
@@ -39,7 +39,7 @@ function Card(rank, suit) {
 }
 
 function Accusation(acc) {
-//accusation object blueprint
+    //accusation object blueprint
     this.accusation = acc;
     //this variable holds the accusation string
     this.torl;
@@ -47,25 +47,25 @@ function Accusation(acc) {
     this.c;
     this.index;
     this.getTorl = function () {
-    //method for getting torl
+        //method for getting torl
         return this.torl;
     }
     this.setTruth = function (i) {
-    //method for setting torl to Truth
+        //method for setting torl to Truth
         this.c = "green";
         this.torl = "Truth";
         this.index = i;
         setBooleanValue(this.c, this.torl, this.index);
     }
     this.setLie = function (i) {
-    //method for setting torl to Lie
+        //method for setting torl to Lie
         this.c = "red";
         this.torl = "Lie";
         this.index = i;
         setBooleanValue(this.c, this.torl, this.index);
     }
     this.setNotSure = function (i) {
-    //method for setting torl to Not Sure
+        //method for setting torl to Not Sure
         this.c = "blue";
         this.torl = "Not Sure";
         this.index = i;
@@ -73,12 +73,12 @@ function Accusation(acc) {
 
     }
     this.getAcc = function () {
-    //method for returning the accusation string
+        //method for returning the accusation string
         return this.accusation;
     }
 }
 function setBooleanValue(c, s, i) {
-//function for setting Truth/Lie/NotSure in the table
+    //function for setting Truth/Lie/NotSure in the table
     if (booleanCells == undefined) {
         booleanCells = document.querySelectorAll(".boolean");
     }
@@ -93,17 +93,17 @@ function setBooleanValue(c, s, i) {
 }
 
 function Person(name, a1, a2) {
-//person object blueprint
+    //person object blueprint
     this.name = name;
     this["a1"] = a1;
     this["a2"] = a2;
 
 
     this.getName = function () {
-    //this method returns the persons name
+        //this method returns the persons name
         return this.name;
     }
-    
+
     this.getAcc1 = function () {
         return this.a1;
     }
@@ -144,7 +144,7 @@ function createPerson() {
     }
 }
 function buildTable() {
-//build the table
+    //build the table
     var accNumber = 0;
     var tpanel = document.getElementById("tpanel");
     var fpanel = document.getElementById("fpanel");
@@ -189,7 +189,7 @@ function buildTable() {
     }
 }
 function solve() {
-//figure out which card was pulled from the deck
+    //figure out which card was pulled from the deck
     var buttonpanel = document.getElementById("btn");
     var solvebtn = document.getElementById("solvebtn");
     //strategy1
@@ -258,6 +258,7 @@ function getPulledCard() {
 
     //if no determination has been made try another strategy
     if (pulledCard == "") {
+        console.log("strategy1 failed attempting strategy2");
         //start strategy2
         //strategy2 is to make a guess at which card was pulled
         //based on the number of times a card is referrenced
@@ -290,19 +291,19 @@ function getPulledCard() {
                 pulledCard = deck[n].getName();
             }
         }
-        if(topRate != 50){
+        if (suspects.length > 0 && topRate != 50) {
             //make a guess at which card was pulled
-            alert("was it the " + pulledCard + "?");
-        }else{
-            alert("The was not enough data provided to make a guess")
+            setTimeout(alert("was it the " + pulledCard + "?"), 2000);
+        } else {
+            setTimeout( alert("not enough info to make a guess"), 2000);
         }
     } else {
-        alert(pulledCard + " is the card pulled from the deck");
+        setTimeout(alert(pulledCard + " is the card pulled from the deck"), 2000);
     }
 }
 function sudoku() {
-//function to do data analysis on the table and modify torl values
-    
+    //function to do data analysis on the table and modify torl values
+
     fillIn();
 
     //create a list of accusations that are Not Sure
@@ -317,28 +318,25 @@ function sudoku() {
     //now that we have a list of problems we can try to find solutions for them
     solveProblems();
 
-    fillIn();
-
     //try to find the pulled card
     for (var p = 0; p < accusations.length; p++) {
         var a = accusations[p].getAcc();
         var torl = accusations[p].getTorl();
         var prefix = getPrefix(a);
         var card = getCard(a);
-        console.log(prefix);
-        console.log(torl);
 
         if (prefix == "it was the" && torl == "Truth") {
             return card;
         } else if (prefix == "it wasn't the" && torl == "Lie") {
             return card;
         } else {
-            return "";
+            console.log(card + " is not the pulled card");
         }
     }
+    return "";
 }
 function solveProblems() {
-//go through the list of problems and solve them
+    //go through the list of problems and solve them
     var acc;
     var torl;
     var solution;
@@ -348,7 +346,6 @@ function solveProblems() {
             acc = accusations[a].getAcc();
             torl = accusations[a].getTorl();
             for (var p = 0; p < ptoSolve.length; p++) {
-                //there are issues with this block that I need to figure out
                 if (ptoSolve[p] == acc) {
                     if (torl != "Not Sure") {
                         solution = accusations[a].getTorl();
@@ -365,7 +362,7 @@ function solveProblems() {
                         //console.log("set " + ptoSolve[p] + " to Lie");
                     }
                 }
-                
+
                 //if problem to solve is opposite of current accusation
                 if (ptoSolve[p] == getOpposite(acc)) {
                     var s;
@@ -397,7 +394,7 @@ function solveProblems() {
 
         }
         //console.log(ptoSolve.length);
-    } while (ptoSolve.length > 0);
+    } while (ptoSolve.length > 0);//continue looping til there are no problems left
 }
 //return the prefix of the card
 function getPrefix(a) {
@@ -453,7 +450,7 @@ function determineTorL(a) {
 }
 
 function fillIn() {
-//function that if one is truth the other is Lie and fills in
+    //function that if one is truth the other is Lie and fills in
     for (var x = 0; x < accusations.length; x++) {
         var torl = accusations[x].getTorl();
         if (x == 0) {
@@ -482,7 +479,7 @@ function fillIn() {
     }
 }
 function getCard(a) {
-//figure out which card the accusation contains and return it
+    //figure out which card the accusation contains and return it
     for (var i = 0; i < deck.length; i++) {
         if (a.includes(deck[i].getName())) {
             return deck[i].getName();
@@ -490,7 +487,7 @@ function getCard(a) {
     }
 }
 function getOpposite(a) {
-//returns the opposite of the string passed as a parameter
+    //returns the opposite of the string passed as a parameter
     var prefix = getPrefix(a);
     var newprefix;
     var card = getCard(a);
@@ -507,7 +504,7 @@ function getOpposite(a) {
 
 }
 function createEventListeners() {
-//create events for the buttons to respond to clicks
+    //create events for the buttons to respond to clicks
     createPersonBtn = document.getElementById("personBtn");
     buildTableBtn = document.getElementById("buildTableBtn");
 
@@ -525,7 +522,7 @@ function createEventListeners() {
 }
 
 function buildDeck() {
-//builds the deck of cards
+    //builds the deck of cards
     //arrays to create a deck of cards
     var ranks = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"];
     var suits = ["Spades", "Hearts", "Diamonds", "Clubs"];
@@ -558,7 +555,7 @@ function buildDeck() {
     s2.selectedIndex = -1;
 }
 function validForm() {
-//stop invalid submissions from getting submitted
+    //stop invalid submissions from getting submitted
     var n = document.getElementById("nameinput").value;
     var p1 = document.getElementById("prefix1").value;
     var p2 = document.getElementById("prefix2").value;
@@ -572,7 +569,7 @@ function validForm() {
 
 }
 function createTitle() {
-//creates the website title
+    //creates the website title
 }
 //build the deck of cards and create eventlisteners for the buttons
 function setup() {
