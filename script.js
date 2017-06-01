@@ -346,14 +346,14 @@ function solveProblems(){
                 if (solution == "Truth") {
                     accusations[a].setTruth(a);
                     ptoSolve.splice(p, 1);
-                    console.log("set " + ptoSolve[p] + " to Truth");
+                    //console.log("set " + ptoSolve[p] + " to Truth");
                     continue Loop1;
 
                 }
                 if (solution == "Lie") {
                     accusations[a].setLie(a);
                     ptoSolve.splice(p, 1)
-                    console.log("set " + ptoSolve[p] + " to Lie");
+                    //console.log("set " + ptoSolve[p] + " to Lie");
                     continue Loop1;
                 }
             }
