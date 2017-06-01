@@ -394,7 +394,16 @@ function solveProblems() {
 
         }
         //console.log(ptoSolve.length);
-    } while (ptoSolve.length > 0);//continue looping til there are no problems left
+    } while (!tableCompleted());//continue looping til there are no problems left
+}
+function tableCompleted(){
+//function that returns true/false depending on if any NotSure remains
+    for(var a=0; a<accusations.length; a++){
+        if(accusations[a].getAcc() == "Not Sure"){
+            return false;
+        }
+        return true;
+    }
 }
 //return the prefix of the card
 function getPrefix(a) {
