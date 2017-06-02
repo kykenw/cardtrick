@@ -5,8 +5,6 @@
 //global variables
 var people = [];
 //holds array of person objects
-var pplCount = 0;
-//iterator for people
 var deck = [];
 //array for holding card objects
 var accusations = [];
@@ -139,8 +137,7 @@ function createPerson() {
         accusations.push(new Accusation(acc1));
         accusations.push(new Accusation(acc2));
         //create Person object and add to people array
-        people[pplCount] = new Person(name, acc1, acc2);
-        pplCount++;
+        people.push(new Person(name, acc1, acc2));
     }
 }
 function buildTable() {
@@ -264,7 +261,7 @@ function getPulledCard() {
         //based on the number of times a card is referrenced
 
         var appearances = [];//hold the number of occurences each card gets referrenced
-        var rates = [];//hold strings for each card
+        var rates = [];//hold rates for each card
         for (var c = 0; c < deck.length; c++) {
             var deckCard = deck[c].getName();//get name of card in deck
             var occurences = 0;
@@ -293,12 +290,12 @@ function getPulledCard() {
         }
         if (suspects.length > 0 && topRate != 50) {
             //make a guess at which card was pulled
-            setTimeout(alert("was it the " + pulledCard + "?"), 2000);
+            //setTimeout(alert("was it the " + pulledCard + "?"), 2000);
         } else {
-            setTimeout( alert("not enough info to make a guess"), 2000);
+            //setTimeout( alert("not enough info to make a guess"), 2000);
         }
     } else {
-        setTimeout(alert(pulledCard + " is the card pulled from the deck"), 2000);
+        //setTimeout(alert(pulledCard + " is the card pulled from the deck"), 2000);
     }
 }
 function sudoku() {
@@ -340,35 +337,37 @@ function solveProblems() {
     var acc;
     var torl;
     var solution;
-    do {
+    while(tableCompleted() == false){
 
         for (var a = 0; a < accusations.length; a++) {
             acc = accusations[a].getAcc();
             torl = accusations[a].getTorl();
+            if(torl != "Not Sure"){
+                solution = torl;
+            }else{
+                solution = "";
+            }
             for (var p = 0; p < ptoSolve.length; p++) {
-                if (ptoSolve[p] == acc) {
-                    if (torl != "Not Sure") {
-                        solution = accusations[a].getTorl();
-                    }
-                    if (solution == "Truth") {
-                        accusations[a].setTruth(a);
-                        ptoSolve.splice(p, 1);
-                        //console.log("set " + ptoSolve[p] + " to Truth");
-
-                    }
-                    if (solution == "Lie") {
-                        accusations[a].setLie(a);
-                        ptoSolve.splice(p, 1)
-                        //console.log("set " + ptoSolve[p] + " to Lie");
+                if (ptoSolve[p] == acc && solution != "") {
+                    for (var n = 0; n < accusations.length; n++) {
+                        var accu = accusations[n].getAcc();
+                        if (accu == ptoSolve[p]) {
+                            if (solution == "Lie") {
+                                accusations[n].setLie(n);
+                                ptoSolve.splice(p, 1);
+                            }
+                            if (solution == "Truth") {
+                                accusations[n].setTruth(n);
+                                ptoSolve.splice(p, 1);
+                            }
+                        }
                     }
                 }
 
                 //if problem to solve is opposite of current accusation
-                if (ptoSolve[p] == getOpposite(acc)) {
+                if (ptoSolve[p] == getOpposite(acc) && solution != "") {
                     var s;
-                    if (torl != "Not Sure") {
-                        solution = accusations[a].getTorl();
-                    }
+                    
                     //set solution for the opposite accusation
                     if (solution == "Truth") {
                         s = "Lie";
@@ -393,8 +392,8 @@ function solveProblems() {
             }
 
         }
-        //console.log(ptoSolve.length);
-    } while (!tableCompleted());//continue looping til there are no problems left
+        console.log(tableCompleted());
+    } //continue looping til there are no problems left
 }
 function tableCompleted(){
 //function that returns true/false depending on if any NotSure remains
