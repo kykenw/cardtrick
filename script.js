@@ -579,6 +579,7 @@ function validForm() {
 }
 function createTitle() {
     //creates the website title
+    var tpanel = document.getElementById("tpanel");
 }
 //build the deck of cards and create eventlisteners for the buttons
 function setup() {
@@ -587,7 +588,7 @@ function setup() {
     createEventListeners();
 }
 
-//call setup as soon as page loads
+//call setup function as soon as page loads
 if (window.addEventListener) {
     window.addEventListener("load", setup, false);
 } else if (window.attachEvent) {
