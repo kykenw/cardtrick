@@ -301,8 +301,6 @@ function getPulledCard() {
 function sudoku() {
     //function to do data analysis on the table and modify torl values
 
-    fillIn();
-
     //create a list of accusations that are Not Sure
     for (var x = 0; x < accusations.length; x++) {
         if (accusations[x].getTorl() == "Not Sure") {
@@ -337,7 +335,9 @@ function solveProblems() {
     var acc;
     var torl;
     var solution;
-    while(tableCompleted() == false){
+    var tabledone = tableCompleted();
+    while(tabledone == false){
+        fillIn();
 
         for (var a = 0; a < accusations.length; a++) {
             acc = accusations[a].getAcc();
@@ -392,17 +392,19 @@ function solveProblems() {
             }
 
         }
-        console.log(tableCompleted());
+        tabledone = tableCompleted();
+        console.log(tabledone);
     } //continue looping til there are no problems left
 }
 function tableCompleted(){
 //function that returns true/false depending on if any NotSure remains
     for(var a=0; a<accusations.length; a++){
-        if(accusations[a].getAcc() == "Not Sure"){
+        var tl = accusations[a].getTorl();
+        if(tl == "Not Sure"){
             return false;
         }
-        return true;
     }
+        return true;
 }
 //return the prefix of the card
 function getPrefix(a) {
