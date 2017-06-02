@@ -335,76 +335,56 @@ function solveProblems() {
     var acc;
     var torl;
     var solution;
-    var tabledone = tableCompleted();
-    while(tabledone == false){
+
+    while (!tableCompleted()) {
         fillIn();
 
         for (var a = 0; a < accusations.length; a++) {
             acc = accusations[a].getAcc();
             torl = accusations[a].getTorl();
-            if(torl != "Not Sure"){
+            if (torl != "Not Sure") {
                 solution = torl;
-            }else{
+            } else {
                 solution = "";
             }
             for (var p = 0; p < ptoSolve.length; p++) {
                 if (ptoSolve[p] == acc && solution != "") {
-                    for (var n = 0; n < accusations.length; n++) {
-                        var accu = accusations[n].getAcc();
-                        if (accu == ptoSolve[p]) {
-                            if (solution == "Lie") {
-                                accusations[n].setLie(n);
-                                ptoSolve.splice(p, 1);
-                            }
-                            if (solution == "Truth") {
-                                accusations[n].setTruth(n);
-                                ptoSolve.splice(p, 1);
-                            }
-                        }
+                    if (solution == "Lie") {
+                        accusations[a].setLie(a);
+                        ptoSolve.splice(p, 1);
+                    }
+                    if (solution == "Truth") {
+                        accusations[a].setTruth(a);
+                        ptoSolve.splice(p, 1);
                     }
                 }
-
                 //if problem to solve is opposite of current accusation
                 if (ptoSolve[p] == getOpposite(acc) && solution != "") {
-                    var s;
-                    
                     //set solution for the opposite accusation
-                    if (solution == "Truth") {
-                        s = "Lie";
-                    }
                     if (solution == "Lie") {
-                        s = "Truth";
+                        accusations[a].setTruth(a);
+                        ptoSolve.splice(p, 1);
                     }
-                    for (var n = 0; n < accusations.length; n++) {
-                        var accu = accusations[n].getAcc();
-                        if (accu == ptoSolve[p]) {
-                            if (s == "Lie") {
-                                accusations[n].setLie(n);
-                                ptoSolve.splice(p, 1);
-                            }
-                            if (s == "Truth") {
-                                accusations[n].setTruth(n);
-                                ptoSolve.splice(p, 1);
-                            }
-                        }
+                    if (solution == "Truth") {
+                        accusations[a].setLie(a);
+                        ptoSolve.splice(p, 1);
                     }
                 }
             }
 
         }
-        tabledone = tableCompleted();
-        console.log(tabledone);
     } //continue looping til there are no problems left
 }
-function tableCompleted(){
-//function that returns true/false depending on if any NotSure remains
-    for(var a=0; a<accusations.length; a++){
+
+function tableCompleted() {
+    //function that returns true/false depending on if any NotSure remains
+    for (var a = 0; a < accusations.length; a++) {
         var tl = accusations[a].getTorl();
-        if(tl == "Not Sure"){
+        if (tl == "Not Sure") {
             return false;
         }
     }
-        return true;
+    return true;
 }
 //return the prefix of the card
 function getPrefix(a) {
@@ -468,6 +448,13 @@ function fillIn() {
                 accusations[x + 1].setTruth(x + 1);
             } else if (torl == "Truth") {
                 accusations[x + 1].setLie(x + 1);
+            }
+            //if x equals 1
+        } else if (x == 1) {
+            if (torl == "Lie") {
+                accusations[x - 1].setTruth(x - 1);
+            } else if (torl == "Truth") {
+                accusations[x - 1].setLie(x - 1);
             }
             //if even number
         } else if (x % 2 == 0) {
