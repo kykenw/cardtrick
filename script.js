@@ -123,7 +123,22 @@ function Person(name, a1, a2) {
         return this.a2;
     }
 }
+function test(){
+    p1a1 = new Accusation("it wasn't the Ace of Spades");
+    p1a2 = new Accusation("it wasn't the 2 of Diamonds");
+    p2a1 = new Accusation("it was the 2 of Diamonds");
+    p2a2 = new Accusation("it wasn't the 7 of Spades");
+    accusations.push(p1a1);
+    accusations.push(p1a2);
+    accusations.push(p2a1);
+    accusations.push(p2a2);
+    var p1 = new Person("one", "it wasn't the Ace of Spades", "it wasn't the 2 of Diamonds");
+    var p2 = new Person("two", "it was the 2 of Diamonds", "it wasn't the 7 of Spades");
+    people.push(p1);
+    people.push(p2);
+    buildTable();
 
+}
 function createPerson() {
     //validForm is a function for validating the information before creating a table
     //to ensure that people fill out everything completely
@@ -346,7 +361,7 @@ function sudoku() {
         } else if (prefix == "it wasn't the" && torl == "Lie") {
             return card;
         } else {
-            console.log(card + " is not the pulled card");
+            //console.log(card + " is not the pulled card");
         }
     }
     return "";
@@ -462,7 +477,7 @@ function fillIn() {
     //function that if one is truth the other is Lie and fills in
     for (var x = 0; x < accusations.length; x++) {
         var torl = accusations[x].getTorl();
-        console.log(x % 2);
+        //console.log(x % 2);
         //if even number
         if (x % 2 == 0) {
             //console.log(x + "%2==0");
