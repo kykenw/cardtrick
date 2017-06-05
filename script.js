@@ -124,18 +124,66 @@ function Person(name, a1, a2) {
     }
 }
 function test(){
-    p1a1 = new Accusation("it wasn't the Ace of Spades");
-    p1a2 = new Accusation("it wasn't the 2 of Diamonds");
-    p2a1 = new Accusation("it was the 2 of Diamonds");
-    p2a2 = new Accusation("it wasn't the 7 of Spades");
-    accusations.push(p1a1);
-    accusations.push(p1a2);
-    accusations.push(p2a1);
-    accusations.push(p2a2);
-    var p1 = new Person("one", "it wasn't the Ace of Spades", "it wasn't the 2 of Diamonds");
-    var p2 = new Person("two", "it was the 2 of Diamonds", "it wasn't the 7 of Spades");
-    people.push(p1);
-    people.push(p2);
+    var wasPulled = "Ace of Spades";
+    var p1 = "it was the ";
+    var p2 = "it wasn't the ";
+    var numofPeople = 10;
+    var acc = numofPeople*2;
+    //index where wasPulled will show up
+    var showsup = Math.floor((Math.random() * acc));
+    
+    //create people with 1 truth 1 lie
+    for(var p=0; p<numofPeople; p++){
+        var n1;
+        var n2;
+        var c1;
+        var c2;
+        var a1;
+        var a2;
+        var prefix;
+        do{
+            n1 = Math.floor((Math.random() * 51));
+            n2 = Math.floor((Math.random() * 51));
+        }while(n1 == n2);
+        //make sure wasPulled shows up in table
+        if(p == showsup){
+            if(showsup % 2 == 0){
+                for(var c=0; c<deck.length; c++){
+                    if(deck[c].getName() == wasPulled){
+                        n1 = c;
+                    }
+                }
+            }else if(showsup % 2 == 1){
+                for(var c=0; c<deck.length; c++){
+                    if(deck[c].getName() == wasPulled){
+                        n2 = c;
+                    }
+                }
+            }
+
+        }
+        //create a truth
+       c1 = deck[n1].getName();
+       if(wasPulled == c1){
+           prefix = p1;
+       }else{
+           prefix = p2;
+       }
+       a1 = prefix + c1;
+       //create a lie
+       c2 = deck[n2].getName();
+       if(wasPulled == c2){
+           prefix = p2;
+       }else{
+           prefix = p1;
+       }
+       a2 = prefix + c2;
+
+       accusations.push(new Accusation(a1));
+       accusations.push(new Accusation(a2));
+       people.push(new Person(p.toString(), a1, a2));
+
+    }
     buildTable();
 
 }
