@@ -23,6 +23,7 @@ var ptoSolve = [];
 //array for holding the Not Sure accusations
 var topRate;
 //variable for holding a rate for strategy2
+var createptosolve = true;
 
 function Card(rank, suit) {
     //card object blueprint
@@ -41,9 +42,13 @@ function Accusation(acc) {
     this.accusation = acc;
     //this variable holds the accusation string
     this.torl;
+    this.opptorl;
     //this variable will hold a true or false value
     this.c;
     this.index;
+    this.getOppTorl = function () {
+        return this.opptorl;
+    }
     this.getTorl = function () {
         //method for getting torl
         return this.torl;
@@ -52,22 +57,31 @@ function Accusation(acc) {
         //method for setting torl to Truth
         this.c = "green";
         this.torl = "Truth";
+        this.opptorl = "Lie";
         this.index = i;
-        setBooleanValue(this.c, this.torl, this.index);
+        if (this.index != -1) {
+            setBooleanValue(this.c, this.torl, this.index);
+        }
     }
     this.setLie = function (i) {
         //method for setting torl to Lie
         this.c = "red";
         this.torl = "Lie";
+        this.opptorl = "Truth";
         this.index = i;
-        setBooleanValue(this.c, this.torl, this.index);
+        if (this.index != -1) {
+            setBooleanValue(this.c, this.torl, this.index);
+        }
     }
     this.setNotSure = function (i) {
         //method for setting torl to Not Sure
         this.c = "blue";
         this.torl = "Not Sure";
+        this.opptorl = "Not Sure";
         this.index = i;
-        setBooleanValue(this.c, this.torl, this.index);
+        if (this.index != -1) {
+            setBooleanValue(this.c, this.torl, this.index);
+        }
 
     }
     this.getAcc = function () {
@@ -136,6 +150,7 @@ function createPerson() {
         //create Accusation objects
         accusations.push(new Accusation(acc1));
         accusations.push(new Accusation(acc2));
+
         //create Person object and add to people array
         people.push(new Person(name, acc1, acc2));
     }
@@ -227,10 +242,13 @@ function solve() {
 
                 if (torl == "Lie") {
                     accusations[i].setLie(i);
+
                 } else if (torl == "Truth") {
                     accusations[i].setTruth(i);
+
                 } else if (torl == "Not Sure") {
                     accusations[i].setNotSure(i);
+
                 }
             }, cooldown + (1000 * i));
         })(i, torl);
@@ -295,19 +313,22 @@ function getPulledCard() {
             //setTimeout( alert("not enough info to make a guess"), 2000);
         }
     } else {
-        //setTimeout(alert(pulledCard + " is the card pulled from the deck"), 2000);
+        setTimeout(alert(pulledCard + " is the card pulled from the deck"), 2000);
     }
 }
 function sudoku() {
     //function to do data analysis on the table and modify torl values
-
-    //create a list of accusations that are Not Sure
-    for (var x = 0; x < accusations.length; x++) {
-        if (accusations[x].getTorl() == "Not Sure") {
-            var a = "";
-            a = accusations[x].getAcc();
-            ptoSolve.push(a);
+    //if this block of code has ran before dont run it again
+    if(createptosolve){
+        //create a list of accusations that are Not Sure
+        for (var x = 0; x < accusations.length; x++) {
+            if (accusations[x].getTorl() == "Not Sure") {
+                var a = "";
+                a = accusations[x].getAcc();
+                ptoSolve.push(a);
+            }
         }
+        createptosolve = false;
     }
 
     //now that we have a list of problems we can try to find solutions for them
@@ -332,57 +353,55 @@ function sudoku() {
 }
 function solveProblems() {
     //go through the list of problems and solve them
-    var acc;
-    var torl;
-    var solution;
+    
+    var iteration = 0;
 
-    while (!tableCompleted()) {
+    while (!tableCompleted(iteration)) {
+
         fillIn();
 
-        for (var a = 0; a < accusations.length; a++) {
+        for(var a; a < accusations.length; a++){
             acc = accusations[a].getAcc();
+            opp = getOpposite(acc);
             torl = accusations[a].getTorl();
-            if (torl != "Not Sure") {
-                solution = torl;
-            } else {
-                solution = "";
-            }
-            for (var p = 0; p < ptoSolve.length; p++) {
-                if (ptoSolve[p] == acc && solution != "") {
-                    if (solution == "Lie") {
-                        accusations[a].setLie(a);
-                        ptoSolve.splice(p, 1);
-                    }
-                    if (solution == "Truth") {
-                        accusations[a].setTruth(a);
-                        ptoSolve.splice(p, 1);
-                    }
-                }
-                //if problem to solve is opposite of current accusation
-                if (ptoSolve[p] == getOpposite(acc) && solution != "") {
-                    //set solution for the opposite accusation
-                    if (solution == "Lie") {
-                        accusations[a].setTruth(a);
-                        ptoSolve.splice(p, 1);
-                    }
-                    if (solution == "Truth") {
-                        accusations[a].setLie(a);
-                        ptoSolve.splice(p, 1);
-                    }
-                }
-            }
+            opptorl = accusations[a].getOppTorl();
 
+            for(var p = 0; p < ptoSolve.length; p++){
+                if(ptoSolve[p] == acc){
+                    //search for contradicory data
+                    if(opptorl == "Truth"){
+                        accusations[a].setLie(a);
+                    }else if(opptorl == "Lie"){
+                        accusations[a].setTruth(a);
+                    }else{
+                        console.log("No contradictory data for (" + acc + ")");
+                        console.log(acc + "= " + torl);
+                        console.log(opp + "= " + opptorl);
+                    }
+                }
+            }
         }
-    } //continue looping til there are no problems left
-}
 
-function tableCompleted() {
+        iteration++;
+    }
+
+
+} //continue looping til there are no problems left
+
+
+function tableCompleted(i) {
     //function that returns true/false depending on if any NotSure remains
-    for (var a = 0; a < accusations.length; a++) {
-        var tl = accusations[a].getTorl();
-        if (tl == "Not Sure") {
-            return false;
+    var breakpoint = 10;
+    if (i < breakpoint) {
+        for (var a = 0; a < accusations.length; a++) {
+            var tl = accusations[a].getTorl();
+            if (tl == "Not Sure") {
+                return false;
+            }
         }
+
+    } else {
+        return true;
     }
     return true;
 }
@@ -443,7 +462,7 @@ function fillIn() {
     //function that if one is truth the other is Lie and fills in
     for (var x = 0; x < accusations.length; x++) {
         var torl = accusations[x].getTorl();
-
+        console.log(x % 2);
         //if even number
         if (x % 2 == 0) {
             //console.log(x + "%2==0");
