@@ -203,9 +203,9 @@ function solve() {
             c2 = getCard(a2);
             suspects.push(c1);
             suspects.push(c2);
-            if (suspects.length == 2) {
-                break;//if there are 2 suspects break out of the loop
-            }
+
+            break;//if there are 2 suspects break out of the loop
+
         }
     }
     //push all non suspect cards into the innocent array
@@ -443,21 +443,9 @@ function fillIn() {
     //function that if one is truth the other is Lie and fills in
     for (var x = 0; x < accusations.length; x++) {
         var torl = accusations[x].getTorl();
-        if (x == 0) {
-            if (torl == "Lie") {
-                accusations[x + 1].setTruth(x + 1);
-            } else if (torl == "Truth") {
-                accusations[x + 1].setLie(x + 1);
-            }
-            //if x equals 1
-        } else if (x == 1) {
-            if (torl == "Lie") {
-                accusations[x - 1].setTruth(x - 1);
-            } else if (torl == "Truth") {
-                accusations[x - 1].setLie(x - 1);
-            }
-            //if even number
-        } else if (x % 2 == 0) {
+
+        //if even number
+        if (x % 2 == 0) {
             //console.log(x + "%2==0");
             if (torl == "Lie") {
                 accusations[x + 1].setTruth(x + 1);
