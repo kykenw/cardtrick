@@ -123,58 +123,92 @@ function Person(name, a1, a2) {
         return this.a2;
     }
 }
-function test(){
+function test() {
+    //set this to whatever you want the pulled card to be
     var wasPulled = "Ace of Spades";
+    //set this to the card that is paired with the wasPulled card
+    var theSuspect = "2 of Hearts";
     var p1 = "it was the ";
     var p2 = "it wasn't the ";
+    //set this to the number of people you would like to generate
     var numofPeople = 10;
-    var acc = numofPeople*2;
+    //this is used with the random functuon to generate a number between 0 - acc
+    var acc = numofPeople * 2;
     //randomly put wasPulled into the table
     var showsup = Math.floor((Math.random() * acc));
-    
+    //index in table that some contradictory data shows up
+    var cDataLoc = Math.floor((Math.random() * acc));
+    //if they are the same generate numbers for them until they are different
+    while (showsup == cDataLoc) {
+        showsup = Math.floor((Math.random() * acc));
+        cDataLoc = Math.floor((Math.random() * acc));
+    }
+
     //create people with 1 truth 1 lie
-    for(var p=0; p<numofPeople; p++){
+    for (var p = 0; p < numofPeople; p++) {
+        //2 accusations per person so accNum used for index if accusations
+        var accNum = p * 2;
+        //variables for random numbers
         var n1;
         var n2;
+        //variables for cards
         var c1;
         var c2;
+        //variables for accusations
         var a1;
         var a2;
         var prefix;
-        do{
+        //generate random numbers
+        do {
             n1 = Math.floor((Math.random() * 51));
             n2 = Math.floor((Math.random() * 51));
-        }while(n1 == n2);
-        //make sure wasPulled shows up in table
-        if(p == showsup){
-            if(showsup % 2 == 0){
+        } while (n1 == n2);
+        //make sure wasPulled shows up in table at the index of showsup and
+        //and theSuspect shows up in paired in the right spot
+        if (accNum == showsup) {
+            if (showsup % 2 == 0) {
                 c1 = wasPulled;
-            }else if(showsup % 2 == 1){
+                c2 = theSuspect;
+            } else if (showsup % 2 == 1) {
+                c1 = theSuspect;
                 c2 = wasPulled;
             }
-
-        }else{
+        //if accNum isnt the shows up set card names
+        } else {
             c1 = deck[n1].getName();
             c2 = deck[n2].getName();
         }
+        //if accNum == cDataLoc overwrite the card name
+        //make sure contradictory data shows up in table
+        if (accNum == cDataLoc) {
+            if (cDataLoc % 2 == 0) {
+                c1 = theSuspect;
+            } else if (cDataLoc % 2 == 1) {
+                c2 = suspect;
+            }
+        }
         //create a truth
-       if(wasPulled == c1){
-           prefix = p1;
-       }else{
-           prefix = p2;
-       }
-       a1 = prefix + c1;
-       //create a lie
-       if(wasPulled == c2){
-           prefix = p2;
-       }else{
-           prefix = p1;
-       }
-       a2 = prefix + c2;
+        if (wasPulled == c1) {
+            prefix = p1;
+        } else {
+            prefix = p2;
+        }
+        //create first accusation
+        a1 = prefix + c1;
+        //create a lie
+        if (wasPulled == c2) {
+            prefix = p2;
+        } else {
+            prefix = p1;
+        }
+        //create second accusation
+        a2 = prefix + c2;
 
-       accusations.push(new Accusation(a1));
-       accusations.push(new Accusation(a2));
-       people.push(new Person(p.toString(), a1, a2));
+        //create Accusation objects with the a1/a2 strings and push them into array
+        accusations.push(new Accusation(a1));
+        accusations.push(new Accusation(a2));
+        //create Person object and push into array
+        people.push(new Person(p.toString(), a1, a2));
 
     }
     buildTable();
@@ -364,9 +398,9 @@ function getPulledCard() {
         }
         if (suspects.length > 0 && topRate != 50) {
             //make a guess at which card was pulled
-            //setTimeout(alert("was it the " + pulledCard + "?"), 2000);
+            setTimeout(alert("was it the " + pulledCard + "?"), 2000);
         } else {
-            //setTimeout( alert("not enough info to make a guess"), 2000);
+            setTimeout(alert("not enough info to make a guess"), 2000);
         }
     } else {
         setTimeout(alert(pulledCard + " is the card pulled from the deck"), 2000);
@@ -375,7 +409,7 @@ function getPulledCard() {
 function sudoku() {
     //function to do data analysis on the table and modify torl values
     //if this block of code has ran before dont run it again
-    if(createptosolve){
+    if (createptosolve) {
         //create a list of accusations that are Not Sure
         for (var x = 0; x < accusations.length; x++) {
             if (accusations[x].getTorl() == "Not Sure") {
@@ -409,27 +443,27 @@ function sudoku() {
 }
 function solveProblems() {
     //go through the list of problems and solve them
-    
+
     var iteration = 0;
 
     while (!tableCompleted(iteration)) {
 
         fillIn();
 
-        for(var a; a < accusations.length; a++){
+        for (var a; a < accusations.length; a++) {
             acc = accusations[a].getAcc();
             opp = getOpposite(acc);
             torl = accusations[a].getTorl();
             opptorl = accusations[a].getOppTorl();
 
-            for(var p = 0; p < ptoSolve.length; p++){
-                if(ptoSolve[p] == acc){
-                    //search for contradicory data
-                    if(opptorl == "Truth"){
+            for (var p = 0; p < ptoSolve.length; p++) {
+                if (ptoSolve[p] == acc) {
+                    //search for contradictory data
+                    if (opptorl == "Truth") {
                         accusations[a].setLie(a);
-                    }else if(opptorl == "Lie"){
+                    } else if (opptorl == "Lie") {
                         accusations[a].setTruth(a);
-                    }else{
+                    } else {
                         console.log("No contradictory data for (" + acc + ")");
                         console.log(acc + "= " + torl);
                         console.log(opp + "= " + opptorl);
@@ -518,10 +552,8 @@ function fillIn() {
     //function that if one is truth the other is Lie and fills in
     for (var x = 0; x < accusations.length; x++) {
         var torl = accusations[x].getTorl();
-        //console.log(x % 2);
         //if even number
         if (x % 2 == 0) {
-            //console.log(x + "%2==0");
             if (torl == "Lie") {
                 accusations[x + 1].setTruth(x + 1);
             } else if (torl == "Truth") {
@@ -529,7 +561,6 @@ function fillIn() {
             }
             //if odd number
         } else if (x % 2 == 1) {
-            //console.log(x + "%2==1");
             if (torl == "Lie") {
                 accusations[x - 1].setTruth(x - 1);
             } else if (torl == "Truth") {
@@ -624,6 +655,7 @@ function validForm() {
     if (n != "" && p1 != "" && p2 != "" && s1 != "" && s2 != "") {
         return true;
     } else {
+        console.log("all fields need to be filled out")
         return false;
     }
 
@@ -631,7 +663,7 @@ function validForm() {
 
 //build the deck of cards and create eventlisteners for the buttons
 function setup() {
-    
+
     buildDeck();
     createEventListeners();
 }
