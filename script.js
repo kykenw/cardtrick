@@ -129,7 +129,7 @@ function test(){
     var p2 = "it wasn't the ";
     var numofPeople = 10;
     var acc = numofPeople*2;
-    //index where wasPulled will show up
+    //randomly put wasPulled into the table
     var showsup = Math.floor((Math.random() * acc));
     
     //create people with 1 truth 1 lie
@@ -148,22 +148,16 @@ function test(){
         //make sure wasPulled shows up in table
         if(p == showsup){
             if(showsup % 2 == 0){
-                for(var c=0; c<deck.length; c++){
-                    if(deck[c].getName() == wasPulled){
-                        n1 = c;
-                    }
-                }
+                c1 = wasPulled;
             }else if(showsup % 2 == 1){
-                for(var c=0; c<deck.length; c++){
-                    if(deck[c].getName() == wasPulled){
-                        n2 = c;
-                    }
-                }
+                c2 = wasPulled;
             }
 
+        }else{
+            c1 = deck[n1].getName();
+            c2 = deck[n2].getName();
         }
         //create a truth
-       c1 = deck[n1].getName();
        if(wasPulled == c1){
            prefix = p1;
        }else{
@@ -171,7 +165,6 @@ function test(){
        }
        a1 = prefix + c1;
        //create a lie
-       c2 = deck[n2].getName();
        if(wasPulled == c2){
            prefix = p2;
        }else{
@@ -635,13 +628,10 @@ function validForm() {
     }
 
 }
-function createTitle() {
-    //creates the website title
-    var tpanel = document.getElementById("tpanel");
-}
+
 //build the deck of cards and create eventlisteners for the buttons
 function setup() {
-    createTitle();
+    
     buildDeck();
     createEventListeners();
 }
