@@ -24,6 +24,15 @@ html, body {
     vertical-align: middle;
     background-color:#ddd;
 }
+.footer {
+    display:flex;
+    padding:20px;
+    min-height:10px;
+    width:860px;
+    background-color:#ddd;
+    justify-content: center;
+}
+
 /*instructions panel*/
 .ipanel {
     display:flex;
@@ -89,4 +98,17 @@ td {
 }
 .violent {
     color:violet;
+}
+
+a:link {
+
+}
+a:visited {
+
+}
+a:hover {
+
+}
+a:active {
+
 }

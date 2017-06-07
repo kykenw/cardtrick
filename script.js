@@ -334,7 +334,7 @@ function buildTable() {
         accNumber++;
     }
     buttonpanel.appendChild(button);
-    button.textContent = "Solve";
+    button.textContent = "Step 1";
     button.id = "solvebtn";
     fpanel.removeChild(form);
 
@@ -410,7 +410,7 @@ function solve() {
     buttonpanel.removeChild(solvebtn);
     //create a next button and append it to the buttonpanel
     next = document.createElement("button");
-    next.textContent = "Next";
+    next.textContent = "Step 2";
     next.id = "next";
     buttonpanel.appendChild(next);
     //create event listener for the next button
