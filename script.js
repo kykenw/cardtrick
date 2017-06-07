@@ -19,11 +19,12 @@ var pulledCard = "";
 //end result string for holding the pulled card from deck
 var cooldown = 1000;
 //cooldown for the settimout to add a delay to the table filling out
-var ptoSolve = [];
-//array for holding the Not Sure accusations
 var topRate;
 //variable for holding a rate for strategy2
-var createptosolve = true;
+var unabletosolve = [];
+
+//array of solutions
+var solutions = [];
 
 function Card(rank, suit) {
     //card object blueprint
@@ -34,6 +35,18 @@ function Card(rank, suit) {
     //method to get the card name
     this.getName = function () {
         return this.name;
+    }
+}
+
+function Solution(acc, torl) {
+    this.acc = acc;
+    this.torl = torl;
+
+    this.getAcc = function () {
+        return this.acc;
+    }
+    this.getTorl = function () {
+        return this.torl;
     }
 }
 
@@ -123,6 +136,31 @@ function Person(name, a1, a2) {
         return this.a2;
     }
 }
+function solutionExists(acc) {
+    accu = acc;
+    for (var s = 0; s < solutions.length; s++) {
+        a = solutions[s].getAcc();
+        if (accu == a) {
+            return true;
+        }
+    }
+    return false;
+}
+function searchSolutions(acc) {
+    var a;
+    var answer;
+    for (var s = 0; s < solutions.length; s++) {
+        a = solutions[s].getAcc();
+        if (acc == a) {
+            answer = solutions[s].getTorl();
+        }
+    }
+    if (answer == undefined) {
+        return "no solution";
+    } else {
+        return answer;
+    }
+}
 function test() {
     //set this to whatever you want the pulled card to be
     var wasPulled = "Ace of Spades";
@@ -131,7 +169,7 @@ function test() {
     var p1 = "it was the ";
     var p2 = "it wasn't the ";
     //set this to the number of people you would like to generate
-    var numofPeople = 10;
+    var numofPeople = 5;
     //this is used with the random functuon to generate a number between 0 - acc
     var acc = numofPeople * 2;
     //randomly put wasPulled into the table
@@ -139,6 +177,7 @@ function test() {
     //index in table that some contradictory data shows up
     var cDataLoc = Math.floor((Math.random() * acc));
     //if they are the same generate numbers for them until they are different
+
     while (showsup == cDataLoc) {
         showsup = Math.floor((Math.random() * acc));
         cDataLoc = Math.floor((Math.random() * acc));
@@ -148,6 +187,8 @@ function test() {
     for (var p = 0; p < numofPeople; p++) {
         //2 accusations per person so accNum used for index if accusations
         var accNum = p * 2;
+        var plusOne = accNum + 1;
+
         //variables for random numbers
         var n1;
         var n2;
@@ -158,34 +199,43 @@ function test() {
         var a1;
         var a2;
         var prefix;
+        var pcinTable = false;
+        //create an error if pulledcard doesnt show up in table
+        if (accNum == showsup || plusOne == showsup) {
+            pcinTable = true;
+        }
         //generate random numbers
-        do {
+        n1 = Math.floor((Math.random() * 51));
+        n2 = Math.floor((Math.random() * 51));
+        //keep rolling until both are unique numbers
+        while (n1 == n2) {
             n1 = Math.floor((Math.random() * 51));
             n2 = Math.floor((Math.random() * 51));
-        } while (n1 == n2);
+        }
         //make sure wasPulled shows up in table at the index of showsup and
         //and theSuspect shows up in paired in the right spot
+        //if even number accNum = p*2
         if (accNum == showsup) {
-            if (showsup % 2 == 0) {
-                c1 = wasPulled;
-                c2 = theSuspect;
-            } else if (showsup % 2 == 1) {
-                c1 = theSuspect;
-                c2 = wasPulled;
-            }
-        //if accNum isnt the shows up set card names
+            c1 = wasPulled;
+            c2 = theSuspect;
+            //if odd number
+        } else if (plusOne == showsup) {
+            c1 = theSuspect;
+            c2 = wasPulled;
+            //if accNum != showup set card names
         } else {
             c1 = deck[n1].getName();
             c2 = deck[n2].getName();
         }
         //if accNum == cDataLoc overwrite the card name
         //make sure contradictory data shows up in table
+        //even
         if (accNum == cDataLoc) {
-            if (cDataLoc % 2 == 0) {
-                c1 = theSuspect;
-            } else if (cDataLoc % 2 == 1) {
-                c2 = suspect;
-            }
+            c1 = theSuspect;
+            //odd
+        } else if (plusOne == cDataLoc) {
+            c2 = theSuspect;
+            //if accNum != showup set card names
         }
         //create a truth
         if (wasPulled == c1) {
@@ -195,6 +245,7 @@ function test() {
         }
         //create first accusation
         a1 = prefix + c1;
+
         //create a lie
         if (wasPulled == c2) {
             prefix = p2;
@@ -212,6 +263,10 @@ function test() {
 
     }
     buildTable();
+    // if (!pcinTable) {
+    //     console.log("Error pulled card not in table");
+    //     console.log(wasPulled + " should have shown up at index " + showsup);
+    // }
 
 }
 function createPerson() {
@@ -324,7 +379,10 @@ function solve() {
     //determine truths/lies
     for (var i = 0; i < accusations.length; i++) {
         var a = accusations[i].getAcc();
+        var opp = getOpposite(a);
         var torl = determineTorL(a);
+        console.log("solutions exists for " + a + ": " + solutionExists(a));
+
 
         //this code allows me to have a setTimeout inside of a loop
         (function (i, torl) {
@@ -332,9 +390,16 @@ function solve() {
 
                 if (torl == "Lie") {
                     accusations[i].setLie(i);
-
+                    if (!solutionExists(a)) {
+                        solutions.push(new Solution(a, "Lie"));
+                        solutions.push(new Solution(opp, "Truth"));
+                    }
                 } else if (torl == "Truth") {
                     accusations[i].setTruth(i);
+                    if (!solutionExists(a)) {
+                        solutions.push(new Solution(a, "Truth"));
+                        solutions.push(new Solution(opp, "Lie"));
+                    }
 
                 } else if (torl == "Not Sure") {
                     accusations[i].setNotSure(i);
@@ -403,25 +468,14 @@ function getPulledCard() {
             setTimeout(alert("not enough info to make a guess"), 2000);
         }
     } else {
+
         setTimeout(alert(pulledCard + " is the card pulled from the deck"), 2000);
     }
 }
 function sudoku() {
     //function to do data analysis on the table and modify torl values
-    //if this block of code has ran before dont run it again
-    if (createptosolve) {
-        //create a list of accusations that are Not Sure
-        for (var x = 0; x < accusations.length; x++) {
-            if (accusations[x].getTorl() == "Not Sure") {
-                var a = "";
-                a = accusations[x].getAcc();
-                ptoSolve.push(a);
-            }
-        }
-        createptosolve = false;
-    }
 
-    //now that we have a list of problems we can try to find solutions for them
+    //if we have solutions to problems solve them
     solveProblems();
 
     //try to find the pulled card
@@ -443,40 +497,29 @@ function sudoku() {
 }
 function solveProblems() {
     //go through the list of problems and solve them
-
-    var iteration = 0;
-
-    while (!tableCompleted(iteration)) {
-
-        fillIn();
-
-        for (var a; a < accusations.length; a++) {
-            acc = accusations[a].getAcc();
-            opp = getOpposite(acc);
-            torl = accusations[a].getTorl();
-            opptorl = accusations[a].getOppTorl();
-
-            for (var p = 0; p < ptoSolve.length; p++) {
-                if (ptoSolve[p] == acc) {
-                    //search for contradictory data
-                    if (opptorl == "Truth") {
-                        accusations[a].setLie(a);
-                    } else if (opptorl == "Lie") {
-                        accusations[a].setTruth(a);
-                    } else {
-                        console.log("No contradictory data for (" + acc + ")");
-                        console.log(acc + "= " + torl);
-                        console.log(opp + "= " + opptorl);
-                    }
+    for (var a = 0; a < accusations.length; a++) {
+        var acc = accusations[a].getAcc();
+        //if a solution exists set it
+        if (solutionExists(acc)) {
+            for (var s = 0; s < solutions.length; s++) {
+                //accusation with solution gets declared to aws
+                var aws = solutions[s].getAcc();
+                var answer = solutions[s].getTorl();
+                if (answer == "Truth") {
+                    accusations[a].setTruth(a);
+                }
+                if (answer == "Lie") {
+                    accusations[a].setLie(a);
                 }
             }
+        }else{
+            unabletosolve.push(acc);
         }
-
-        iteration++;
     }
-
-
-} //continue looping til there are no problems left
+    for(var u = 0; u < unabletosolve.length; u++){
+        console.log("unable to solve " + unabletosolve[u])
+    }
+}
 
 
 function tableCompleted(i) {
@@ -556,15 +599,31 @@ function fillIn() {
         if (x % 2 == 0) {
             if (torl == "Lie") {
                 accusations[x + 1].setTruth(x + 1);
+                var a = accusations[x + 1].getAcc();
+                if (!solutionExists(a)) {
+                    solutions.push(new Solution(a, "Truth"));
+                }
             } else if (torl == "Truth") {
                 accusations[x + 1].setLie(x + 1);
+                var a = accusations[x + 1].getAcc();
+                if (!solutionExists(a)) {
+                    solutions.push(new Solution(a, "Lie"));
+                }
             }
             //if odd number
         } else if (x % 2 == 1) {
             if (torl == "Lie") {
                 accusations[x - 1].setTruth(x - 1);
+                var a = accusations[x - 1].getAcc();
+                if (!solutionExists(a)) {
+                    solutions.push(new Solution(a, "Truth"));
+                }
             } else if (torl == "Truth") {
                 accusations[x - 1].setLie(x - 1);
+                var a = accusations[x - 1].getAcc();
+                if (!solutionExists(a)) {
+                    solutions.push(new Solution(a, "Lie"));
+                }
             }
         }
     }
