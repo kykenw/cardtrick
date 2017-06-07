@@ -22,7 +22,6 @@ var cooldown = 1000;
 var topRate;
 //variable for holding a rate for strategy2
 var unabletosolve = [];
-
 //array of solutions
 var solutions = [];
 
@@ -39,6 +38,7 @@ function Card(rank, suit) {
 }
 
 function Solution(acc, torl) {
+    //solution object blueprint
     this.acc = acc;
     this.torl = torl;
 
@@ -137,9 +137,9 @@ function Person(name, a1, a2) {
     }
 }
 function solutionExists(acc) {
-    accu = acc;
+    var accu = acc;
     for (var s = 0; s < solutions.length; s++) {
-        a = solutions[s].getAcc();
+        var a = solutions[s].getAcc();
         if (accu == a) {
             return true;
         }
@@ -381,11 +381,9 @@ function solve() {
         var a = accusations[i].getAcc();
         var opp = getOpposite(a);
         var torl = determineTorL(a);
-        console.log("solutions exists for " + a + ": " + solutionExists(a));
-
 
         //this code allows me to have a setTimeout inside of a loop
-        (function (i, torl) {
+        (function (i, torl, a, opp) {
             setTimeout(function () {
 
                 if (torl == "Lie") {
@@ -406,8 +404,10 @@ function solve() {
 
                 }
             }, cooldown + (1000 * i));
-        })(i, torl);
+        })(i, torl, a, opp);
     }
+    console.log("solutions exists for " + a + ": " + solutionExists(a));
+
     buttonpanel.removeChild(solvebtn);
     //create a next button and append it to the buttonpanel
     next = document.createElement("button");
@@ -507,7 +507,7 @@ function solveProblems() {
                 accusations[a].setTruth(a);
             }
             if(solution == "Lie"){
-                accustations[a].setLie(a);
+                accusations[a].setLie(a);
             }
         }else{
             unabletosolve.push(acc);
@@ -518,23 +518,6 @@ function solveProblems() {
     }
 }
 
-
-function tableCompleted(i) {
-    //function that returns true/false depending on if any NotSure remains
-    var breakpoint = 10;
-    if (i < breakpoint) {
-        for (var a = 0; a < accusations.length; a++) {
-            var tl = accusations[a].getTorl();
-            if (tl == "Not Sure") {
-                return false;
-            }
-        }
-
-    } else {
-        return true;
-    }
-    return true;
-}
 //return the prefix of the card
 function getPrefix(a) {
     var prefix;
