@@ -147,10 +147,9 @@ function solutionExists(acc) {
     return false;
 }
 function searchSolutions(acc) {
-    var a;
     var answer;
     for (var s = 0; s < solutions.length; s++) {
-        a = solutions[s].getAcc();
+        var a = solutions[s].getAcc();
         if (acc == a) {
             answer = solutions[s].getTorl();
         }
@@ -406,7 +405,7 @@ function solve() {
             }, cooldown + (1000 * i));
         })(i, torl, a, opp);
     }
-    console.log("solutions exists for " + a + ": " + solutionExists(a));
+    //console.log("solutions exists for " + a + ": " + solutionExists(a));
 
     buttonpanel.removeChild(solvebtn);
     //create a next button and append it to the buttonpanel
@@ -475,8 +474,19 @@ function getPulledCard() {
 function sudoku() {
     //function to do data analysis on the table and modify torl values
 
+    //since all pairs have one truth one lie we try to 
+    //fill in for accusations where there is no solution
+    //and create solutions
+    fillIn();
     //if we have solutions to problems solve them
     solveProblems();
+    //since all pairs have one truth one lie we try to 
+    //fill in for accusations where there is no solution
+    //and create solutions
+    fillIn();
+    //if we have solutions to problems solve them
+    solveProblems();
+
 
     //try to find the pulled card
     for (var p = 0; p < accusations.length; p++) {
@@ -489,8 +499,6 @@ function sudoku() {
             return card;
         } else if (prefix == "it wasn't the" && torl == "Lie") {
             return card;
-        } else {
-            //console.log(card + " is not the pulled card");
         }
     }
     return "";
@@ -499,22 +507,28 @@ function solveProblems() {
     //go through the list of problems and solve them
     for (var a = 0; a < accusations.length; a++) {
         var acc = accusations[a].getAcc();
+        var opp = getOpposite(acc);
+        
         //if a solution exists set it
         if (solutionExists(acc)) {
             var solution = searchSolutions(acc);
-            console.log("The solution to " + acc + ": " +solution);
+               
             if(solution == "Truth"){
-                accusations[a].setTruth(a);
+                accusations[a].setTruth(a);        
             }
             if(solution == "Lie"){
                 accusations[a].setLie(a);
+            }
+            //if there isnt a solution for opposite push one into array
+            if(!solutionExists(opp)){
+                solutions.push(new Solution(opp, solution));
             }
         }else{
             unabletosolve.push(acc);
         }
     }
     for(var u = 0; u < unabletosolve.length; u++){
-        console.log("unable to solve " + unabletosolve[u])
+        //console.log("unable to solve " + unabletosolve[u])
     }
 }
 
@@ -575,17 +589,19 @@ function fillIn() {
     //function that if one is truth the other is Lie and fills in
     for (var x = 0; x < accusations.length; x++) {
         var torl = accusations[x].getTorl();
+        var inc = x + 1;
+        var dec = x - 1;
         //if even number
         if (x % 2 == 0) {
             if (torl == "Lie") {
-                accusations[x + 1].setTruth(x + 1);
-                var a = accusations[x + 1].getAcc();
+                accusations[inc].setTruth(inc);
+                var a = accusations[inc].getAcc();
                 if (!solutionExists(a)) {
                     solutions.push(new Solution(a, "Truth"));
                 }
             } else if (torl == "Truth") {
-                accusations[x + 1].setLie(x + 1);
-                var a = accusations[x + 1].getAcc();
+                accusations[inc].setLie(inc);
+                var a = accusations[inc].getAcc();
                 if (!solutionExists(a)) {
                     solutions.push(new Solution(a, "Lie"));
                 }
@@ -593,14 +609,14 @@ function fillIn() {
             //if odd number
         } else if (x % 2 == 1) {
             if (torl == "Lie") {
-                accusations[x - 1].setTruth(x - 1);
-                var a = accusations[x - 1].getAcc();
+                accusations[dec].setTruth(dec);
+                var a = accusations[dec].getAcc();
                 if (!solutionExists(a)) {
                     solutions.push(new Solution(a, "Truth"));
                 }
             } else if (torl == "Truth") {
-                accusations[x - 1].setLie(x - 1);
-                var a = accusations[x - 1].getAcc();
+                accusations[dec].setLie(dec);
+                var a = accusations[dec].getAcc();
                 if (!solutionExists(a)) {
                     solutions.push(new Solution(a, "Lie"));
                 }
@@ -694,7 +710,7 @@ function validForm() {
     if (n != "" && p1 != "" && p2 != "" && s1 != "" && s2 != "") {
         return true;
     } else {
-        console.log("all fields need to be filled out")
+        console.log("all fields need to be filled out");
         return false;
     }
 
