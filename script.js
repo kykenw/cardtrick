@@ -501,16 +501,13 @@ function solveProblems() {
         var acc = accusations[a].getAcc();
         //if a solution exists set it
         if (solutionExists(acc)) {
-            for (var s = 0; s < solutions.length; s++) {
-                //accusation with solution gets declared to aws
-                var aws = solutions[s].getAcc();
-                var answer = solutions[s].getTorl();
-                if (answer == "Truth") {
-                    accusations[a].setTruth(a);
-                }
-                if (answer == "Lie") {
-                    accusations[a].setLie(a);
-                }
+            var solution = searchSolutions(acc);
+            console.log("The solution to " + acc + ": " +solution);
+            if(solution == "Truth"){
+                accusations[a].setTruth(a);
+            }
+            if(solution == "Lie"){
+                accustations[a].setLie(a);
             }
         }else{
             unabletosolve.push(acc);
