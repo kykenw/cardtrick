@@ -17,7 +17,7 @@ var innocent = [];
 //array for holding innocent cards
 var pulledCard = "";
 //end result string for holding the pulled card from deck
-var cooldown = 1000;
+var cooldown = 100;
 //cooldown for the settimout to add a delay to the table filling out
 var topRate;
 //variable for holding a rate for strategy2
@@ -162,7 +162,7 @@ function searchSolutions(acc) {
 }
 function test() {
     //set this to whatever you want the pulled card to be
-    var wasPulled = "Ace of Spades";
+    var wasPulled = "10 of Hearts";
     //set this to the card that is paired with the wasPulled card
     var theSuspect = "2 of Hearts";
     var p1 = "it was the ";
@@ -402,7 +402,7 @@ function solve() {
                     accusations[i].setNotSure(i);
 
                 }
-            }, cooldown + (1000 * i));
+            }, cooldown * i);
         })(i, torl, a, opp);
     }
     //console.log("solutions exists for " + a + ": " + solutionExists(a));
@@ -430,7 +430,7 @@ function getPulledCard() {
         console.log("strategy1 failed attempting strategy2");
         //start strategy2
         //strategy2 is to make a guess at which card was pulled
-        //based on the number of times a card is referrenced
+        //based on a coin flip
 
         if (suspects.length > 0) {
             
@@ -438,10 +438,13 @@ function getPulledCard() {
             //flip a coin and guess one of the suspects
             if(ranNum % 2 == 0){
                 pulledCard = suspects[0];
+    
             }
             if(ranNum % 2 == 1){
                 pulledCard = suspects[1];
             }
+            //use regexp to replace white spaces in string
+            pulledCard = pulledCard.replace(/\s/g,'').toLowerCase();
             
             //make a guess at which card was pulled
             setTimeout(alert("was it the " + pulledCard + "?"), 2000);
@@ -450,8 +453,12 @@ function getPulledCard() {
             setTimeout(alert("not enough info to make a guess"), 2000);
         }
     } else {
+        //use regexp to replace white spaces in string
+        pulledCard = pulledCard.replace(/\s/g,'').toLowerCase();
+        
         //say the card that was pulled
-        setTimeout(alert(pulledCard + " is the card pulled from the deck"), 2000);
+        //setTimeout(alert(pulledCard + " is the card pulled from the deck"), 2000);
+        document.location = "result.html?card="+pulledCard;
     }
 }
 function sudoku() {
@@ -504,7 +511,14 @@ function solveProblems() {
             }
             //if there isnt a solution for opposite push one into array
             if(!solutionExists(opp)){
-                solutions.push(new Solution(opp, solution));
+                var oppSolution;
+                if(solution == "Truth"){
+                    oppSolution = "Lie";
+                }
+                if(solution == "Lie"){
+                    oppSolution = "Truth";
+                }
+                solutions.push(new Solution(opp, oppSolution));
             }
         }else{
             unabletosolve.push(acc);

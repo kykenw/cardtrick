@@ -24,6 +24,22 @@ html, body {
     vertical-align: middle;
     background-color:#ddd;
 }
+.textpanel {
+    display:flex;
+    padding:20px;
+    min-height:10px;
+    width:860px;
+    background-color:#eee;
+    justify-content: center;
+}
+.cpanel {
+    display:flex;
+    padding:20px;
+    min-height:10px;
+    width:860px;
+    background-color:#eee;
+    justify-content: center;
+}
 .footer {
     display:flex;
     padding:20px;
