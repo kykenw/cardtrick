@@ -432,42 +432,25 @@ function getPulledCard() {
         //strategy2 is to make a guess at which card was pulled
         //based on the number of times a card is referrenced
 
-        var appearances = [];//hold the number of occurences each card gets referrenced
-        var rates = [];//hold rates for each card
-        for (var c = 0; c < deck.length; c++) {
-            var deckCard = deck[c].getName();//get name of card in deck
-            var occurences = 0;
-            for (var a = 0; a < accusations.length; a++) {
-                var ac = accusations[a].getAcc();
-                var accCard = getCard(ac);//get the card name out of accusation
-                if (deckCard == accCard) {
-                    occurences++;
-                }
+        if (suspects.length > 0) {
+            
+            var ranNum = Math.floor((Math.random() * 99));
+            //flip a coin and guess one of the suspects
+            if(ranNum % 2 == 0){
+                pulledCard = suspects[0];
             }
-            appearances.push(occurences);
-        }
-        //calculate rates and put them in paralell array
-        for (var c = 0; c < deck.length; c++) {
-            var oc = appearances[c];
-            var rate = (1 - Math.pow(0.50, oc)) * 100;
-            rates.push(rate);
-        }
-        //get the highest value in the rates array
-        topRate = Math.max.apply(Math, rates);
-        for (var n = 0; n < rates.length; n++) {
-            //find the card that has the topRate and assign it to pulledCard
-            if (topRate == rates[n]) {
-                pulledCard = deck[n].getName();
+            if(ranNum % 2 == 1){
+                pulledCard = suspects[1];
             }
-        }
-        if (suspects.length > 0 && topRate != 50) {
+            
             //make a guess at which card was pulled
             setTimeout(alert("was it the " + pulledCard + "?"), 2000);
         } else {
+            //this occurs if strategy1 fails and there are no suspects
             setTimeout(alert("not enough info to make a guess"), 2000);
         }
     } else {
-
+        //say the card that was pulled
         setTimeout(alert(pulledCard + " is the card pulled from the deck"), 2000);
     }
 }
