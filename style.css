@@ -24,9 +24,20 @@ html, body {
     vertical-align: middle;
     background-color:#ddd;
 }
+h2 {
+    margin:10px;
+    float:left;
+    
+}
+ul{
+    padding:0;
+}
 li{
+    margin-left:20px;
+    
     list-style:none;
 }
+
 .textpanel {
     display:flex;
     padding:20px;
@@ -34,6 +45,7 @@ li{
     width:860px;
     background-color:#eee;
     justify-content: center;
+    text-align: center;
 }
 .cpanel {
     display:flex;
