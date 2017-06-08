@@ -447,7 +447,8 @@ function getPulledCard() {
             pulledCard = pulledCard.replace(/\s/g,'').toLowerCase();
             
             //make a guess at which card was pulled
-            setTimeout(alert("was it the " + pulledCard + "?"), 2000);
+            //setTimeout(alert("was it the " + pulledCard + "?"), 2000);
+            document.location = "result.html?card="+pulledCard;
         } else {
             //this occurs if strategy1 fails and there are no suspects
             setTimeout(alert("not enough info to make a guess"), 2000);
