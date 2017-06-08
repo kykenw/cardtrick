@@ -162,7 +162,7 @@ function searchSolutions(acc) {
 }
 function test() {
     //set this to whatever you want the pulled card to be
-    var wasPulled = "10 of Hearts";
+    var wasPulled = "9 of Hearts";
     //set this to the card that is paired with the wasPulled card
     var theSuspect = "2 of Hearts";
     var p1 = "it was the ";
