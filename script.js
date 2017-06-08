@@ -162,13 +162,13 @@ function searchSolutions(acc) {
 }
 function test() {
     //set this to whatever you want the pulled card to be
-    var wasPulled = "9 of Hearts";
+    var wasPulled = "7 of Spades";
     //set this to the card that is paired with the wasPulled card
     var theSuspect = "2 of Hearts";
     var p1 = "it was the ";
     var p2 = "it wasn't the ";
     //set this to the number of people you would like to generate
-    var numofPeople = 5;
+    var numofPeople = 10;
     //this is used with the random functuon to generate a number between 0 - acc
     var acc = numofPeople * 2;
     //randomly put wasPulled into the table
