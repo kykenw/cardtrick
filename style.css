@@ -24,6 +24,9 @@ html, body {
     vertical-align: middle;
     background-color:#ddd;
 }
+li{
+    list-style:none;
+}
 .textpanel {
     display:flex;
     padding:20px;
@@ -52,6 +55,7 @@ html, body {
 /*instructions panel*/
 .ipanel {
     display:flex;
+    margin-left:10px;
     min-height:50px;
     background-color:#eee;
 }
